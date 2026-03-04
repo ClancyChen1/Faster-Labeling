@@ -23,7 +23,7 @@ python -m pip install -r requirements.txt
 python main.py --config config.yaml
 ```
 
-## 4. 界面架构说明（PyQt6）
+## 4. 界面架构说明
 界面采用“三栏 + 顶部通栏”结构：
 - 顶部通栏：工具标题 + 主题切换（`Light / Dark`）。
 - 左侧栏：
@@ -83,9 +83,6 @@ def filter_row(columns: List[str], row: Dict[str, str]) -> Dict[str, Any]:
 ├─ config.yaml
 ├─ requirements.txt
 ├─ README.md
-├─ STYLE_GUIDE.md
-├─ RUNNING_GUIDE_PYQT6.md
-├─ UI_DESIGN_NOTES.md
 ├─ data/
 │  └─ sample_input.csv
 ├─ filters/
