@@ -1,0 +1,158 @@
+﻿# ===============================
+# 通用图形化打标签工具 - 配置文件（YAML）
+# ===============================
+# 说明：
+# 1) 本文件请使用 UTF-8 编码。
+# 2) YAML 注释以 # 开头。
+# 3) 路径可写相对路径（相对当前 config.yaml 位置）或绝对路径。
+
+# -------------------------------
+# 路径配置
+# -------------------------------
+paths:
+  # 输入数据源 CSV（必填）
+  # 示例：./data/sample_input.csv
+  input_csv: ./data/sample_input.csv
+
+  # 标签输出 CSV（必填）
+  # 若断点续打且配置变化，可自动新建带时间戳文件
+  # 示例：./output/labels_output.csv
+  output_csv: ./output/labels_output.csv
+
+  # 会话日志文件（必填）
+  # 示例：./output/session.log
+  log_file: ./output/session.log
+
+  # 断点状态文件（必填）
+  # 示例：./output/state.json
+  state_file: ./output/state.json
+
+# -------------------------------
+# 数据采样
+# -------------------------------
+# 抽样率，范围 [0, 1]
+# 1.0 = 全量；0.1 = 10% 抽样；0 = 不会有可打标数据
+sampling_rate: 1.0
+
+# 随机种子（整数）
+# 同样的输入数据 + 同样种子 + 同样抽样率 => 抽样结果可复现
+random_seed: 42
+
+# -------------------------------
+# 当前样本展示列（可在 GUI 中再修改）
+# -------------------------------
+display_columns:
+  - id
+  - author
+  - content
+  - publish_time
+  - likes
+
+# -------------------------------
+# 列备注（可选）
+# key: 必须是 CSV 中真实列名
+# value: 备注文本
+# -------------------------------
+column_notes:
+  content: 微博/帖子正文
+  publish_time: 发布时间
+  likes: 点赞量
+
+# -------------------------------
+# 标签备注（可选）
+# key: 必须是 label 的 key（不是 name）
+# value: 备注文本
+# -------------------------------
+label_notes:
+  sentiment: 文本情绪倾向
+  topics: 可多选主题标签
+  is_ad: 是否广告内容
+  notes: 人工补充说明
+
+# -------------------------------
+# 标签定义（核心）
+# -------------------------------
+# key 与 name 的区别：
+# - key: 程序内部标识（必须唯一，建议英文/下划线）
+#        会被以下功能直接引用：label_notes、pre_filter 返回值、内部状态。
+# - name: 输出到结果 CSV 的列名（可读性名称）
+#         允许与 key 不同；可写中文列名。
+# 建议：key 保持稳定；name 可按业务随时调整显示/导出名称。
+labels:
+  - key: sentiment             # 内部标识（唯一）
+    name: sentiment            # 输出 CSV 列名
+    type: single_choice        # single_choice | multi_choice | text
+    options:                   # single_choice / multi_choice 必填
+      - positive
+      - neutral
+      - negative
+    allow_custom: true         # 是否允许用户填自定义值
+    required: true             # 是否必填
+
+  - key: topics
+    name: topics
+    type: multi_choice
+    options:
+      - market
+      - policy
+      - technology
+      - risk
+    allow_custom: true
+    required: true
+
+  - key: is_ad
+    name: is_ad
+    type: single_choice
+    options:
+      - yes
+      - no
+      - not_sure
+    allow_custom: false
+    required: true
+
+  - key: notes
+    name: notes
+    type: text                 # text 类型不需要 options
+    required: false
+
+# -------------------------------
+# 前置筛选器（可选）
+# -------------------------------
+# 非必填。不使用前置筛选器时有两种写法：
+# 1) 直接删除整个 pre_filters 段
+# 2) 显式写为空对象：pre_filters: {}
+# 规则：{列名: Python筛选器文件路径}
+# 筛选器函数签名必须是：
+#   filter_row(columns: List[str], row: Dict[str, str]) -> Dict[str, Any]
+# 返回值字典规则：
+#   - value == []: 人工填写该标签
+#   - value != []: 自动填写该标签
+#   - 省略某个标签 key: 自动写入 filter_reject_value
+pre_filters:
+  content: ./filters/content_filter.py
+
+# 当某一行被筛选“跳过某些标签/全部标签”时，自动写入该值
+# 可填写任意字符串，例如：SKIPPED / __FILTERED_OUT__ / N/A
+# 若 pre_filters 未配置或为空，本项不会生效。
+filter_reject_value: __FILTERED_OUT__
+
+# 是否记录 filter 自动填写行为到日志（默认 false）
+log_filter_actions: false
+
+# -------------------------------
+# 界面配置
+# -------------------------------
+ui:
+  # 主题：Light | Dark
+  theme: Dark
+
+  # 应用窗口图标（可选）
+  # 支持 .ico / .png。可写相对路径或绝对路径。
+  # 不配置时，程序会尝试使用项目根目录的 image.png。
+  icon: ./images/icon.png
+
+  # 兼容旧配置保留字段（PyQt6版本中不使用）
+  color_theme: dark-blue
+
+  # 窗口尺寸，格式：宽x高
+  geometry: 1400x900

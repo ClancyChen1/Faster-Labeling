@@ -1,0 +1,73 @@
+﻿/* Standalone global scrollbar stylesheet (only scrollbar rules). */
+
+QScrollBar:vertical {
+    background: __TRACK__;
+    width: 10px;
+    border: none;
+    border-radius: 5px;
+    margin: 0px;
+}
+
+QScrollBar::handle:vertical {
+    background: __HANDLE__;
+    border: none;
+    border-radius: 5px;
+    min-height: 20px;
+}
+
+QScrollBar::handle:vertical:hover {
+    background: __HOVER__;
+}
+
+QScrollBar::add-page:vertical,
+QScrollBar::sub-page:vertical {
+    background: __TRACK__;
+    border: none;
+    border-radius: 5px;
+}
+
+QScrollBar::add-line:vertical,
+QScrollBar::sub-line:vertical,
+QScrollBar::up-arrow:vertical,
+QScrollBar::down-arrow:vertical {
+    width: 0px;
+    height: 0px;
+    background: transparent;
+    border: none;
+}
+
+QScrollBar:horizontal {
+    background: __TRACK__;
+    height: 8px;
+    border: none;
+    border-radius: 5px;
+    margin: 0px;
+}
+
+QScrollBar::handle:horizontal {
+    background: __HANDLE__;
+    border: none;
+    border-radius: 5px;
+    min-width: 20px;
+}
+
+QScrollBar::handle:horizontal:hover {
+    background: __HOVER__;
+}
+
+QScrollBar::add-page:horizontal,
+QScrollBar::sub-page:horizontal {
+    background: __TRACK__;
+    border: none;
+    border-radius: 5px;
+}
+
+QScrollBar::add-line:horizontal,
+QScrollBar::sub-line:horizontal,
+QScrollBar::left-arrow:horizontal,
+QScrollBar::right-arrow:horizontal {
+    width: 0px;
+    height: 0px;
+    background: transparent;
+    border: none;
+}
